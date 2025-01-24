@@ -60,7 +60,6 @@ class DiscountController extends Controller
                 'discountedTotal' => number_format($order->total - $totalDiscount, 2),
             ]);
         } catch (\Exception $e) {
-            dd($e);
             return response()->json([
                 'error' => 'Sistemsel bir hata oluştu'], 500);
         }
