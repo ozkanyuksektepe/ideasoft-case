@@ -15,66 +15,83 @@ class CustomerController extends Controller
 
     public function store(CustomerCreateRequest $request)
     {
-        $validated = $request->validated();
+        try {
+            $validated = $request->validated();
 
-        $customerExist = Customer::where("name",$validated["name"])->first();
-        if(!empty($customerExist->id)){
-            return response()->json(['message' => 'Böyle bir müşteri zaten kayıtlı.'], 404);
+            $customerExist = Customer::where("name",$validated["name"])->first();
+            if(!empty($customerExist->id)){
+                return response()->json(['message' => 'Böyle bir müşteri zaten kayıtlı.'], 404);
+            }
+
+            $customer = Customer::create($validated);
+
+            return response()->json([
+                'message' => 'Müşteri başarıyla oluşturuldu.',
+                'customer' => $customer
+            ], 201);
+        } catch(\Exception $e) {
+            return response()->json([
+                'error' => 'Müşteri ekleme sırasında bir hata oluştu'], 500);
         }
-
-        $customer = Customer::create($validated);
-
-        return response()->json([
-            'message' => 'Müşteri başarıyla oluşturuldu.',
-            'customer' => $customer
-        ], 201);
     }
 
 
 
     public function show($id)
     {
-        $customer = Customer::find($id);
+        try {
+            $customer = Customer::find($id);
 
-        if (!$customer) {
-            return response()->json(['message' => 'Müşteri bulunamadı.'], 404);
+            if (!$customer) {
+                return response()->json(['message' => 'Müşteri bulunamadı.'], 404);
+            }
+
+            return response()->json($customer, 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Sistemsel bir hata oluştu'], 500);
         }
-
-        return response()->json($customer, 200);
     }
 
-    public function update(Request $request, $id)
+    public function update(CustomerCreateRequest $request, $id)
     {
-        $customer = Customer::find($id);
+        try {
+            $customer = Customer::find($id);
 
-        if (!$customer) {
-            return response()->json(['message' => 'Müşteri bulunamadı.'], 404);
+            if (!$customer) {
+                return response()->json(['message' => 'Müşteri bulunamadı.'], 404);
+            }
+
+            $validated = $request->validated();
+
+            $customer->update($validated);
+
+            return response()->json([
+                'message' => 'Müşteri başarıyla güncellendi.',
+                'customer' => $customer
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Müşteri güncellenirken hata oluştu'], 500);
         }
 
-        $validated = $request->validate([
-            'name' => 'nullable|string|max:255',
-            'since' => 'nullable',
-            'revenue' => 'nullable|numeric|min:0',
-        ]);
-
-        $customer->update($validated);
-
-        return response()->json([
-            'message' => 'Müşteri başarıyla güncellendi.',
-            'customer' => $customer
-        ], 200);
     }
 
     public function destroy($id)
     {
-        $customer = Customer::find($id);
+        try {
+            $customer = Customer::find($id);
 
-        if (!$customer) {
-            return response()->json(['message' => 'Müşteri bulunamadı.'], 404);
+            if (!$customer) {
+                return response()->json(['message' => 'Müşteri bulunamadı.'], 404);
+            }
+
+            $customer->delete();
+
+            return response()->json(['message' => 'Müşteri başarıyla silindi.'], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Silinirken hata oluştu'], 500);
         }
-
-        $customer->delete();
-
-        return response()->json(['message' => 'Müşteri başarıyla silindi.'], 200);
     }
 }

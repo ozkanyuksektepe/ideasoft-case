@@ -19,7 +19,6 @@ Route::get('discounts/{orderId}', [DiscountController::class, 'calculateDiscount
 Route::prefix('products')->group(function () {
     Route::get('/', [ProductController::class, 'index']);
     Route::post('/', [ProductController::class, 'store']);
-    Route::post('/bulk/insert', [ProductController::class, 'bulkStore']);
     Route::get('/{id}', [ProductController::class, 'show']);
     Route::put('/{id}', [ProductController::class, 'update']);
     Route::delete('/{id}', [ProductController::class, 'destroy']);
@@ -28,7 +27,6 @@ Route::prefix('products')->group(function () {
 Route::prefix('customers')->group(function () {
     Route::get('/', [CustomerController::class, 'index']);
     Route::post('/', [CustomerController::class, 'store']);
-    Route::post('/bulk/insert', [CustomerController::class, 'bulkStore']);
     Route::get('/{id}', [CustomerController::class, 'show']);
     Route::put('/{id}', [CustomerController::class, 'update']);
     Route::delete('/{id}', [CustomerController::class, 'destroy']);
