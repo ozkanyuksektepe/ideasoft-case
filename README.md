@@ -1,1 +1,3 @@
-ideasoft-case
+php artisan migrate 
+
+php artisan serve
