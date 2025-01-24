@@ -32,6 +32,3 @@ Route::prefix('customers')->group(function () {
     Route::delete('/{id}', [CustomerController::class, 'destroy']);
 });
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
